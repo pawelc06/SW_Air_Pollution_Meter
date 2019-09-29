@@ -130,7 +130,7 @@ void displayTable(uint8_t parNum, struct par_list_str_t *pssl) {
 			h = 1;
 		}
 
-		itoa(time1.tm_hour + 2, timeStr, 10);
+		_itoa(time1.tm_hour + 2, timeStr, 10);
 		strcat(timeStr, ":00");
 
 		Display_String((j + 1) * 15, 319, timeStr, LCD_WHITE);
@@ -393,6 +393,7 @@ int main(void) {
 	uint32_t ts1;
 	uint32_t rtcInitStatus;
 	uint8_t i;
+	time_t utcTime;
 
 	/* Initialization */
 	//Initialize system
@@ -419,12 +420,13 @@ int main(void) {
 	while (1) {
 		//time server
 	if(s%144 == 0){ //every 24h so time synchronization
-		initWiFiModule("192.210.214.132");
+		initWiFiModuleUDP("193.106.216.30","123");
 		Delay_ms(5000);
 
-		if (getTimeFromWeb(serialBuffer) ){
-			ts1 = parseDateTime(serialBuffer);
-			synchronizeTime(ts1);
+		//if (getTimeFromWeb(serialBuffer) ){
+		if (getNTPTimeFromTimeServer(serialBuffer,&utcTime) ) {
+			//ts1 = parseDateTime(serialBuffer);
+			synchronizeTime(utcTime);
 			Display_String(75, 310, "Time synchronized correctly.", LCD_WHITE);
 		} else {
 			Display_String(75, 310, "Time synchronization failed!", LCD_WHITE);
@@ -433,7 +435,7 @@ int main(void) {
 
 #ifndef TEST_MODE
 		//air server
-		initWiFiModule("85.25.104.143");
+		initWiFiModuleTCP("85.25.104.143");
 		Delay_ms(5000);
 #endif
 	}
