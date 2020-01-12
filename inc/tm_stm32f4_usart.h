@@ -279,7 +279,8 @@ typedef enum {
 /* Default buffer size for each USART */
 #ifndef USART_BUFFER_SIZE
 //#define USART_BUFFER_SIZE 				12288
-#define USART_BUFFER_SIZE 				15335
+//#define USART_BUFFER_SIZE 				15335
+#define USART_BUFFER_SIZE 				16300
 #endif
 
 /* Set default buffer size for specific USART if not set by user */

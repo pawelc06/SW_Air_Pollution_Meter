@@ -463,7 +463,9 @@ int main(void) {
 			//result = parseJSONMessageAir(6, &pssl, jsonBegin);
 
 		//6->17
-		if (jsonBegin && httpRespLength && !parseJSONMessageAir(17, &pssl, jsonBegin)) {
+		//17-> 13
+		//if (jsonBegin && httpRespLength && !parseJSONMessageAir(17, &pssl, jsonBegin)) {
+		if (jsonBegin && httpRespLength && !parseJSONMessageAir(16, &pssl, jsonBegin)) {
 
 
 			result = parseJSONMessageAir(20, &pssl, jsonBegin);
@@ -474,7 +476,8 @@ int main(void) {
 			//repeat one chart per minute five times
 			while(i<20){
 
-				displayChartPM25(17, &pssl);
+				//displayChartPM25(17, &pssl);
+				displayChartPM25(16, &pssl);
 				TM_RTC_GetDateTime(&RTC_Data, TM_RTC_Format_BIN);
 				sprintf(ts2, "%02d:%02d:%02d", RTC_Data.hours, RTC_Data.minutes, RTC_Data.seconds);
 				Set_Font(&Font8x12);
