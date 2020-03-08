@@ -76,8 +76,12 @@ bool isDST(struct tm timeToCheck){
 			return false;
 	}
 
-	if((timeToCheck.tm_mon == 3)){ //Date in April
-		lastSundayDay = NthDate(timeToCheck.tm_year+1900, timeToCheck.tm_mon+1, 0, 4);
+	if((timeToCheck.tm_mon == 2)){ //Date in March
+		if(timeToCheck.tm_year%4 == 0){//leap year like 2020
+			lastSundayDay = NthDate(timeToCheck.tm_year+1900, timeToCheck.tm_mon+1, 0, 5);
+		} else {
+			lastSundayDay = NthDate(timeToCheck.tm_year+1900, timeToCheck.tm_mon+1, 0, 4);
+		}
 		if(timeToCheck.tm_mday < lastSundayDay){
 			return false;
 		} else {
@@ -92,8 +96,8 @@ bool isDST(struct tm timeToCheck){
 				} else {
 					return false;
 				}
-	} else
-	return false;
+	}
+
 
 
 }
