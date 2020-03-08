@@ -92,8 +92,8 @@ bool isDST(struct tm timeToCheck){
 				} else {
 					return false;
 				}
-	}
-
+	} else
+	return false;
 
 
 }
