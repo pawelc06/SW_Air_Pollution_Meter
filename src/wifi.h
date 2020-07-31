@@ -61,6 +61,8 @@ bool enterCommandMode();
 int getPollutionIndex(char * serialBuffer);
 int getTimeFromWeb(char * serialBuffer);
 int getNTPTimeFromTimeServer(char * serialBuffer, time_t * utcTime);
+void setSSIDAndPassword(char *ssid,char *password);
+void resetUSRToFactorySettings();
 
 
 #endif /* INC_WIFI_H_ */

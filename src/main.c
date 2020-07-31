@@ -419,7 +419,8 @@ int main(void) {
 
 	s=0;
 
-
+	//setSSIDAndPassword("vault05","AbsurdalnyFotel22");
+	//resetUSRToFactorySettings();
 
 	while (1) {
 		//time server

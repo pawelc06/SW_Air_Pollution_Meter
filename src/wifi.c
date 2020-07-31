@@ -83,6 +83,117 @@ void initWiFiModuleTCP(char *ipAddress) {
 
 }
 
+void setSSIDAndPassword(char *ssid,char *password){
+	bool resWiFi;
+
+
+		Set_Font(&Font8x12);
+		TM_GPIO_SetPinHigh(GPIOA, GPIO_Pin_4);
+		Delay_ms(500);
+		TM_GPIO_SetPinLow(GPIOA, GPIO_Pin_4);
+		Delay_ms(300);
+		TM_GPIO_SetPinHigh(GPIOA, GPIO_Pin_4);
+		Clear_Screen(0x0000);
+		Display_String(15, 310, "Waiting for READY...", LCD_WHITE);
+		while (TM_GPIO_GetInputPinValue(GPIOC, GPIO_Pin_6))
+			;
+
+		Display_String(30, 310, "READY! Waiting for WiFi link...", LCD_WHITE);
+
+		while (!TM_GPIO_GetInputPinValue(GPIOC, GPIO_Pin_7))
+			;
+
+		Delay_ms(100);
+		Display_String(45, 310, "WiFi connected. Entering command mode", LCD_WHITE);
+
+		resWiFi = enterCommandMode();
+
+		if (resWiFi) {
+			Display_String(60, 310, "Success", LCD_WHITE);
+		} else {
+			Display_String(60, 310, "Failure", LCD_WHITE);
+		}
+
+		TM_USART_ClearBuffer(USART2);
+
+		Display_String(75, 310, "VER:", LCD_WHITE);
+		Display_String(90, 310, serialBuffer, LCD_WHITE);
+
+
+
+		TM_USART_Puts(USART2, "AT+WSSSID=vault05");
+		TM_USART_Puts(USART2, "\r\n");
+
+		Delay_ms(50);
+
+		TM_USART_Gets(USART2, serialBuffer, 100);
+
+
+		Display_String(75, 310, "AT+WSSSID:", LCD_WHITE);
+		Display_String(90, 310, serialBuffer, LCD_WHITE);
+
+		TM_USART_Puts(USART2, "AT+WSKEY=WPAPSK,AES,AbsurdalnyFotel22><");
+				TM_USART_Puts(USART2, "\r\n");
+
+				Delay_ms(50);
+
+				TM_USART_Gets(USART2, serialBuffer, 100);
+
+
+				Display_String(75, 310, "AT+WSKEY:", LCD_WHITE);
+				Display_String(90, 310, serialBuffer, LCD_WHITE);
+
+}
+
+void resetUSRToFactorySettings(){
+	bool resWiFi;
+
+
+		Set_Font(&Font8x12);
+		TM_GPIO_SetPinHigh(GPIOA, GPIO_Pin_4);
+		Delay_ms(500);
+		TM_GPIO_SetPinLow(GPIOA, GPIO_Pin_4);
+		Delay_ms(300);
+		TM_GPIO_SetPinHigh(GPIOA, GPIO_Pin_4);
+		Clear_Screen(0x0000);
+		Display_String(15, 310, "Waiting for READY...", LCD_WHITE);
+		while (TM_GPIO_GetInputPinValue(GPIOC, GPIO_Pin_6))
+			;
+
+		Display_String(30, 310, "READY! Waiting for WiFi link...", LCD_WHITE);
+
+		while (!TM_GPIO_GetInputPinValue(GPIOC, GPIO_Pin_7))
+			;
+
+		Delay_ms(100);
+		Display_String(45, 310, "WiFi connected. Entering command mode", LCD_WHITE);
+
+		resWiFi = enterCommandMode();
+
+		if (resWiFi) {
+			Display_String(60, 310, "Success", LCD_WHITE);
+		} else {
+			Display_String(60, 310, "Failure", LCD_WHITE);
+		}
+
+		TM_USART_ClearBuffer(USART2);
+
+		Display_String(75, 310, "VER:", LCD_WHITE);
+		Display_String(90, 310, serialBuffer, LCD_WHITE);
+
+
+
+		TM_USART_Puts(USART2, "AT+RELD");
+		TM_USART_Puts(USART2, "\r\n");
+
+		Delay_ms(50);
+
+		TM_USART_Gets(USART2, serialBuffer, 100);
+
+
+
+}
+
 void initWiFiModuleUDP(char *ipAddress, char *udpPort) {
 	bool resWiFi;
 
