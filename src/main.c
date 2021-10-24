@@ -419,7 +419,7 @@ int main(void) {
 
 	s=0;
 
-	//setSSIDAndPassword("vault05","AbsurdalnyFotel22");
+	//setSSIDAndPassword("xyz","xyz");
 	//resetUSRToFactorySettings();
 
 	while (1) {
