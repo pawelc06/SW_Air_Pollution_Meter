@@ -425,7 +425,7 @@ int main(void) {
 	while (1) {
 		//time server
 	if(s%144 == 0){ //every 24h so time synchronization
-		initWiFiModuleUDP("193.106.216.30","123");
+		initWiFiModuleUDP("195.46.37.22","123");
 		Delay_ms(5000);
 
 		//if (getTimeFromWeb(serialBuffer) ){
