@@ -90,7 +90,11 @@ bool isDST(struct tm timeToCheck){
 	}
 
 	if((timeToCheck.tm_mon == 9)){ //Date in October
-		lastSundayDay = NthDate(timeToCheck.tm_year+1900, timeToCheck.tm_mon+1, 0, 4);
+		if(timeToCheck.tm_year%4 == 0){//leap year like 2020
+			lastSundayDay = NthDate(timeToCheck.tm_year+1900, timeToCheck.tm_mon+1, 0, 4);
+		} else {
+			lastSundayDay = NthDate(timeToCheck.tm_year+1900, timeToCheck.tm_mon+1, 0, 5);
+		}
 		if(timeToCheck.tm_mday < lastSundayDay){
 					return true;
 				} else {
