@@ -1,0 +1,2 @@
+startup_stm32f4xx.c:445:13:Default_Handler	1
+startup_stm32f4xx.c:287:6:Default_Reset_Handler	2

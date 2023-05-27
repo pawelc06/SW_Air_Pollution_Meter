@@ -2,7 +2,7 @@
  * wifi.c
  *
  *  Created on: 11 lis 2017
- *      Author: Pawe³
+ *      Author: Paweï¿½
  */
 
 #include "wifi.h"

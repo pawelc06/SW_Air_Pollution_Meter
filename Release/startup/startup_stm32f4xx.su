@@ -1,0 +1,2 @@
+../startup/startup_stm32f4xx.c:445:13:Default_Handler	0	static
+../startup/startup_stm32f4xx.c:287:6:Default_Reset_Handler	8	static,ignoring_inline_asm

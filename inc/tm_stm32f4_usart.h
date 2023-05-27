@@ -209,12 +209,12 @@ UART8        |PE1    PE0     |-      -       |-      -
 
 /* F405/407/415/417/F446 */
 #if defined (STM32F40_41xxx) || defined(STM32F446xx)
-#define USE_USART1
+//#define USE_USART1
 #define USE_USART2
-#define USE_USART3
-#define USE_UART4
-#define USE_UART5
-#define USE_USART6
+//#define USE_USART3
+//#define USE_UART4
+//#define USE_UART5
+//#define USE_USART6
 #endif
 /* F427/429/437/439 */
 #if defined (STM32F427_437xx) || defined (STM32F429_439xx)
@@ -280,7 +280,7 @@ typedef enum {
 #ifndef USART_BUFFER_SIZE
 //#define USART_BUFFER_SIZE 				12288
 //#define USART_BUFFER_SIZE 				15335
-#define USART_BUFFER_SIZE 				16300
+#define USART_BUFFER_SIZE 				20000
 #endif
 
 /* Set default buffer size for specific USART if not set by user */

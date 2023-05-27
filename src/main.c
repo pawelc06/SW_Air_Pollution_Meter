@@ -6,13 +6,11 @@
 
 #include "defines.h"
 #include "stm32f4xx.h"
-//#include "tm_stm32f4_delay.h"
 #include "tm_stm32f4_disco.h"
 #include "tm_stm32f4_usart.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
-#include "mjson.h"
 #include <time.h>
 #include "wifi.h"
 #include "json_parser.h"
@@ -459,25 +457,21 @@ int main(void) {
 		itoa(httpRespLength, lenString, 10);
 		Display_String(90, 100, lenString, LCD_WHITE);
 
-		/*
-		 jsonBegin = serialBuffer;
 
-		 jsonBegin = strstr(jsonBegin, "[[");
-		 parseJSONMessageMJSON(6, &pssl, jsonBegin);
-		 */
 
 		jsonBegin = serialBuffer;
 
 
-			//result = parseJSONMessageAir(6, &pssl, jsonBegin);
+
 
 		//6->17
 		//17-> 13
 		//if (jsonBegin && httpRespLength && !parseJSONMessageAir(17, &pssl, jsonBegin)) {
-		if (jsonBegin && httpRespLength && !parseJSONMessageAir(16, &pssl, jsonBegin)) {
+		//if (jsonBegin && httpRespLength && !parseJSONMessageAir(16, &pssl, jsonBegin)) {
+		if (jsonBegin && httpRespLength && !parseJSONMessageAir(21, &pssl, jsonBegin)) {
 
-
-			result = parseJSONMessageAir(20, &pssl, jsonBegin);
+			//temperature
+			result = parseJSONMessageAir(18, &pssl, jsonBegin);
 			//displayTable(8,&pssl);
 
 			i=0;
@@ -486,28 +480,26 @@ int main(void) {
 			while(i<20){
 
 				//displayChartPM25(17, &pssl);
-				displayChartPM25(16, &pssl);
+				displayChartPM25(21, &pssl);
 				TM_RTC_GetDateTime(&RTC_Data, TM_RTC_Format_BIN);
 				sprintf(ts2, "%02d:%02d:%02d", RTC_Data.hours, RTC_Data.minutes, RTC_Data.seconds);
 				Set_Font(&Font8x12);
 				Display_String(0, 310, ts2, LCD_BLACK);
 
 				Delay_ms(15000);
-				displayChartTemperature(20,&pssl);
+
+				displayChartTemperature(18,&pssl);
 
 				TM_RTC_GetDateTime(&RTC_Data, TM_RTC_Format_BIN);
 				sprintf(ts2, "%02d:%02d:%02d", RTC_Data.hours, RTC_Data.minutes, RTC_Data.seconds);
 				Set_Font(&Font8x12);
 				Display_String(0, 310, ts2, LCD_BLACK);
 				Delay_ms(15000);
+
 				i++;
 			}
 
-			//Display_String(0, 70, "T:", LCD_BLACK);
-			//Display_String(0, 50, pssl.par_list[18].sample_list[pssl.par_list[18].last_sample_index].v_str, LCD_BLACK);
-			//Display_String(0, 16, "C", LCD_BLACK);
 
-			//Delay_ms(600000);
 			s++;
 
 		} else {
