@@ -2,7 +2,7 @@
  * wifi.h
  *
  *  Created on: 11 lis 2017
- *      Author: Pawe³
+ *      Author: Paweï¿½
  */
 
 #ifndef INC_WIFI_H_
@@ -59,6 +59,7 @@ void initWiFiModuleTCP(char *ipAddress);
 void initWiFiModuleUDP(char *ipAddress,char *udpPort);
 bool enterCommandMode();
 int getPollutionIndex(char * serialBuffer);
+int getPollutionIndexFromGios(char * serialBuffer);
 int getTimeFromWeb(char * serialBuffer);
 int getNTPTimeFromTimeServer(char * serialBuffer, time_t * utcTime);
 void setSSIDAndPassword(char *ssid,char *password);

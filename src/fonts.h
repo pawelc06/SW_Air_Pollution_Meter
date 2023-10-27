@@ -16,6 +16,8 @@ extern sFONT Font16x24;
 extern sFONT Font12x12;
 extern sFONT Font8x12;
 extern sFONT Font8x8;
+extern sFONT TahomaFont21x25;
+extern sFONT VerdanaFont30x32;
 
 
 #define LINE(x) ((x) * (((sFONT *)LCD_GetFont())->Height))

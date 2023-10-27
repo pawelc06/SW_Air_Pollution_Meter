@@ -414,6 +414,8 @@ int main(void) {
 
 	Clear_Screen(0x0000);
 	Set_Font(&Font8x12);
+	//Set_Font(&VerdanaFont30x32);
+	//Display_String32(75, 310, "!$# 12345", LCD_WHITE);
 
 	rtcInitStatus = TM_RTC_Init(TM_RTC_ClockSource_External);
 
@@ -440,6 +442,12 @@ int main(void) {
 			continue;
 		}
 
+		initWiFiModuleTCP("195.187.34.96");
+		Delay_ms(5000);
+		httpRespLength = getPollutionIndexFromGios(serialBuffer);
+		jsonBegin = serialBuffer;
+		parseJSONMessageAirGios(1, &pssl, jsonBegin);
+
 #ifndef TEST_MODE
 		//air server
 		initWiFiModuleTCP("85.25.104.143");
@@ -464,10 +472,7 @@ int main(void) {
 
 
 
-		//6->17
-		//17-> 13
-		//if (jsonBegin && httpRespLength && !parseJSONMessageAir(17, &pssl, jsonBegin)) {
-		//if (jsonBegin && httpRespLength && !parseJSONMessageAir(16, &pssl, jsonBegin)) {
+
 		if (jsonBegin && httpRespLength && !parseJSONMessageAir(21, &pssl, jsonBegin)) {
 
 			//temperature

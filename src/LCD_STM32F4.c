@@ -261,9 +261,9 @@ void Draw_Char(uint16_t x, uint16_t y, const uint16_t *c, uint16_t color)
 {
   uint32_t index = 0, i = 0;
 
-  for(index = 0; index < Current_Font->Height; index++)
+  for(index = 0; index < Current_Font->Height; index++) //rows
   {
-    for(i = 0; i < Current_Font->Width; i++)
+    for(i = 0; i < Current_Font->Width; i++) //pixels in row
     {
       if( ((((c[index] & ((0x80 << ((Current_Font->Width / 12 ) * 8 ) ) >> i)) == 0x00) && (Current_Font->Width <= 12)) ||
           (((c[index] & (0x1 << i)) == 0x00)&&(Current_Font->Width > 12 )))  == 0x00)
@@ -271,6 +271,35 @@ void Draw_Char(uint16_t x, uint16_t y, const uint16_t *c, uint16_t color)
         Draw_Pixel(x, y-1-i, color);
       }
     }
+    x++;
+  }
+}
+
+void Draw_Char2(uint16_t x, uint16_t y, const uint16_t *c, uint16_t color)
+{
+  uint32_t index = 0;
+  uint32_t i = 0;
+  uint32_t pixelTest;
+  uint8_t second = 0;
+  uint8_t j=1;
+
+  uint32_t byteWord;
+
+  for(index = 0; index < Current_Font->Height; index++) //rows-32
+  {
+	  byteWord = (uint32_t) (c[index*2] << 16) + c[j];
+	  //byteWord = (uint32_t) (c[index*2] + (c[j] >> 16));
+	for(i = 0; i < Current_Font->Width*2; i++) //pixels in row - 32
+    {
+
+    	pixelTest = (byteWord & (0x80000000 >> i));
+    	if( (Current_Font->Width > 16) && pixelTest ) //16 bit
+      {
+        Draw_Pixel(x, y-1-i, color);
+      }
+
+    }
+    j += 2;
     x++;
   }
 }
@@ -286,6 +315,12 @@ void Display_Char(uint16_t x, uint16_t y, uint8_t c, uint16_t color)
 {
   c -= 32;
   Draw_Char(x, y, &Current_Font->table[c * Current_Font->Height], color);
+}
+
+void Display_Char32(uint16_t x, uint16_t y, uint8_t c, uint16_t color)
+{
+  c -= 32;
+  Draw_Char2(x, y, &Current_Font->table[2 * c * Current_Font->Height], color);
 }
 
 /*
@@ -304,6 +339,22 @@ void Display_String(uint16_t x, uint16_t y, uint8_t *ptr,uint16_t color)
   {
     /* Display one character on LCD */
     Display_Char(x, refcolumn, *ptr, color);
+    /* Decrement the column position by 16 */
+    refcolumn -= Current_Font->Width;
+    /* Point on the next character */
+    ptr++;
+  }
+}
+
+void Display_String32(uint16_t x, uint16_t y, uint8_t *ptr,uint16_t color)
+{
+  uint16_t refcolumn = y;
+
+  /* Send the string character by character on LCD */
+  while ((*ptr != 0) & (((refcolumn + 1) & 0xFFFF) >= Current_Font->Width))
+  {
+    /* Display one character on LCD */
+    Display_Char32(x, refcolumn, *ptr, color);
     /* Decrement the column position by 16 */
     refcolumn -= Current_Font->Width;
     /* Point on the next character */
