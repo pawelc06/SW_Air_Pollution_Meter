@@ -9,14 +9,7 @@
 #define SRC_JSON_PARSER_H_
 
 #include <stdint.h>
-static char status[10];
-static char message[10];
-static char countryCode[10];
-static char zoneName[20];
-static char abbreviation[10];
-static char gmtOffset[10];
-static char dst[10];
-static int timestamp;
+
 
 
 #define AIR_MAX_SAMPLES 25
