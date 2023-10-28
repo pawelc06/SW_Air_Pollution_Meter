@@ -415,7 +415,9 @@ int main(void) {
 	Clear_Screen(0x0000);
 	Set_Font(&Font8x12);
 	//Set_Font(&VerdanaFont30x32);
-	//Display_String32(75, 310, "!$# 12345", LCD_WHITE);
+
+	//Set_Font64(&VerdanaFont64x65);
+	//Display_String64(75, 310, "12.7", LCD_WHITE);
 
 	rtcInitStatus = TM_RTC_Init(TM_RTC_ClockSource_External);
 

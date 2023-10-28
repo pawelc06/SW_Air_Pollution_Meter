@@ -112,6 +112,7 @@ void Draw_Char(uint16_t x, uint16_t y, const uint16_t *c, uint16_t color);
 void Display_Char(uint16_t x, uint16_t y, uint8_t c, uint16_t color);
 void Display_String(uint16_t x, uint16_t y, uint8_t *ptr, uint16_t color);
 void Set_Font(sFONT *fonts);
+void Set_Font64(sFONT64 *fonts);
 void Draw_Image(uint16_t x, uint16_t y, uint16_t x_res, uint16_t y_res,const uint16_t *ptr_image);
 void Init_LCD(void);
 void Write_Command(uint16_t reg, uint16_t data);

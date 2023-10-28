@@ -12,6 +12,7 @@
 /* Private Variables *********************************************************/
 
 static sFONT *Current_Font;
+static sFONT64 *Current_Font64;
 static __IO uint32_t TimingDelay;
 
 /* Functions *****************************************************************/
@@ -304,6 +305,40 @@ void Draw_Char2(uint16_t x, uint16_t y, const uint16_t *c, uint16_t color)
   }
 }
 
+void Draw_Char64(uint16_t x, uint16_t y, const uint8_t *c, uint16_t color)
+{
+  uint32_t index = 0;
+  uint32_t i = 0;
+  uint64_t pixelTest;
+
+
+
+  uint64_t byteWord;
+  uint8_t tempByte;
+
+  for(index = 0; index < Current_Font64->Height; index++) //rows-32
+  {
+	  //byteWord = (uint64_t) (c[index*2] << 16) + c[j];
+	  byteWord = 0;
+	  for(int k=0;k<8;k++){
+		  tempByte = c[index*8+k];
+		  byteWord += ( ((uint64_t) tempByte) << (7*8-k*8));
+	  }
+	for(i = 0; i < Current_Font64->Width; i++) //pixels in row - 64
+    {
+
+    	pixelTest = (byteWord & (0x8000000000000000 >> i));
+    	if( pixelTest ) //16 bit
+      {
+        Draw_Pixel(x, y-1-i, color);
+      }
+
+    }
+
+    x++;
+  }
+}
+
 /*
  * Display a character.
  * x, y - position
@@ -321,6 +356,12 @@ void Display_Char32(uint16_t x, uint16_t y, uint8_t c, uint16_t color)
 {
   c -= 32;
   Draw_Char2(x, y, &Current_Font->table[2 * c * Current_Font->Height], color);
+}
+
+void Display_Char64(uint16_t x, uint16_t y, uint8_t c, uint16_t color)
+{
+  c -= 33;  //'!'
+  Draw_Char64(x, y, &Current_Font64->table[8 * c * Current_Font64->Height], color);
 }
 
 /*
@@ -362,6 +403,22 @@ void Display_String32(uint16_t x, uint16_t y, uint8_t *ptr,uint16_t color)
   }
 }
 
+void Display_String64(uint16_t x, uint16_t y, uint8_t *ptr,uint16_t color)
+{
+  uint16_t refcolumn = y;
+
+  /* Send the string character by character on LCD */
+  while ((*ptr != 0) & (((refcolumn + 1) & 0xFFFF) >= Current_Font64->Width))
+  {
+    /* Display one character on LCD */
+    Display_Char64(x, refcolumn, *ptr, color);
+    /* Decrement the column position by 16 */
+    refcolumn -= Current_Font64->Width;
+    /* Point on the next character */
+    ptr++;
+  }
+}
+
 /*
  * Sets the text font.
  */
@@ -369,6 +426,11 @@ void Display_String32(uint16_t x, uint16_t y, uint8_t *ptr,uint16_t color)
 void Set_Font(sFONT *fonts)
 {
   Current_Font = fonts;
+}
+
+void Set_Font64(sFONT64 *fonts)
+{
+  Current_Font64 = fonts;
 }
 
 /*
