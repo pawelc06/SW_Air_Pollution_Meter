@@ -233,7 +233,10 @@ void displayChartPM25(uint8_t parNum, struct par_list_str_t *pssl) {
 
 		j = j - 20;
 	}
-	Set_Font(&Font16x24);
+	//Set_Font(&Font16x24);
+
+	Set_Font64(&VerdanaFont64x65);
+
 	if (val <= 20) {
 		color = LCD_GREEN;
 	} else if (val <= 20 && val < 25) {
@@ -242,8 +245,8 @@ void displayChartPM25(uint8_t parNum, struct par_list_str_t *pssl) {
 		color = LCD_RED;
 	}
 
-	Display_String(50, 180, pssl->par_list[parNum - 1].sample_list[i - 1].v_str,
-			color);
+	//Display_String(50, 180, pssl->par_list[parNum - 1].sample_list[i - 1].v_str,color);
+	Display_String64(20, 220, pssl->par_list[parNum - 1].sample_list[i - 1].v_str,color);
 }
 
 void displayChartTemperature(uint8_t parNum, struct par_list_str_t *pssl) {
@@ -337,8 +340,9 @@ void displayChartTemperature(uint8_t parNum, struct par_list_str_t *pssl) {
 		j = j - 20;
 	}
 
-	Set_Font(&Font16x24);
-
+	//Set_Font(&Font16x24);
+	Set_Font64(&VerdanaFont64x65);
+	//Display_String64(75, 310, "12.7", LCD_WHITE);
 
 
 	if (val <= 10) {
@@ -349,10 +353,12 @@ void displayChartTemperature(uint8_t parNum, struct par_list_str_t *pssl) {
 		color = LCD_RED;
 	}
 
-	Display_String(45, 190, pssl->par_list[parNum - 1].sample_list[i - 1].v_str,
-			color);
-	Display_String(45, 130, "~C",
-				color);
+
+	Display_String64(20, 288, pssl->par_list[parNum - 1].sample_list[i - 1].v_str,color);
+	Display_String64(20, 100, "~C",color);
+
+	//Display_String(45, 190, pssl->par_list[parNum - 1].sample_list[i - 1].v_str,color);
+	//Display_String(45, 130, "~C",color);
 
 }
 
