@@ -155,6 +155,7 @@ void displayChartPM25(uint8_t parNum, struct par_list_str_t *pssl) {
 	uint16_t val;
 	uint16_t prev_val;
 	uint16_t color;
+	char *dotPtr;
 
 	Clear_Screen(0xFFFF);
 	Set_Font(&Font8x12);
@@ -246,7 +247,10 @@ void displayChartPM25(uint8_t parNum, struct par_list_str_t *pssl) {
 	}
 
 	//Display_String(50, 180, pssl->par_list[parNum - 1].sample_list[i - 1].v_str,color);
-	Display_String64(20, 220, pssl->par_list[parNum - 1].sample_list[i - 1].v_str,color);
+	if((dotPtr = strchr(pssl->par_list[parNum - 1].sample_list[i - 1].v_str,'.'))){
+		*dotPtr = 0;
+	}
+	Display_String64(20, 200, pssl->par_list[parNum - 1].sample_list[i - 1].v_str,color);
 }
 
 void displayChartTemperature(uint8_t parNum, struct par_list_str_t *pssl) {
