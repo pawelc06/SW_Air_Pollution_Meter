@@ -103,6 +103,8 @@ uint8_t parseJSONMessageAirGios(uint8_t parNum, struct par_list_str_t *pssl,
 		char * jsonMsg) {
 
 	char * jsonBegin;
+	char * jsonEnd;
+	char * jsonErrorPtr;
 	int i;
 	char hourStr[6];
 
@@ -114,14 +116,20 @@ uint8_t parseJSONMessageAirGios(uint8_t parNum, struct par_list_str_t *pssl,
 
 
 	jsonBegin = strstr(jsonBegin, "{");
-
-
+	jsonEnd = strstr(jsonBegin, "}]}");
+	*(jsonEnd+3) = 0;
 
 
 	if(!jsonBegin)
 		return -1;
 
 	cJSON *root = cJSON_Parse(jsonBegin);
+
+	if (root == NULL)
+	    {
+	        const char *error_ptr = cJSON_GetErrorPtr();
+	        jsonErrorPtr = error_ptr;
+	    }
 	//char *string = cJSON_Print(json);
 
 	/***************/

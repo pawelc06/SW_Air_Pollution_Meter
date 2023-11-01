@@ -433,6 +433,8 @@ int main(void) {
 	s=0;
 
 	getPollutionIndexFromGiosESP12(serialBuffer);
+	jsonBegin = serialBuffer;
+	parseJSONMessageAirGios(1, &pssl, jsonBegin);
 
 	//setSSIDAndPassword("xyz","xyz");
 	//resetUSRToFactorySettings();
@@ -455,7 +457,8 @@ int main(void) {
 
 		initWiFiModuleTCP("195.187.34.96");
 		Delay_ms(5000);
-		httpRespLength = getPollutionIndexFromGios(serialBuffer);
+		//httpRespLength = getPollutionIndexFromGios(serialBuffer);
+		httpRespLength = getPollutionIndexFromGiosESP12(serialBuffer);
 		jsonBegin = serialBuffer;
 		parseJSONMessageAirGios(1, &pssl, jsonBegin);
 

@@ -371,16 +371,13 @@ int getPollutionIndexFromGiosESP12(char * serialBuffer) {
 
 	Delay_ms(1000);
 
-	i = 0;
+	TM_USART_Puts(USART1,"AT+CIPDINFO=0\r\n");
 
-	while (!TM_USART_BufferEmpty(USART1)) {
-			c = TM_USART_Getc(USART1);
-			//TM_USART_Putc(USART1, c);
-			serialBuffer[i] = c;
-			i++;
+	Delay_ms(1000);
 
-		}
-		serialBuffer[i] = 0;
+	TM_USART_Puts(USART1,"AT+CIPRECVMODE=1\r\n");
+
+	Delay_ms(1000);
 
 		TM_USART_ClearBuffer(USART1);
 

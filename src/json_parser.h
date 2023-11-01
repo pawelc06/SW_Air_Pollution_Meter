@@ -40,7 +40,7 @@ uint8_t parseJSONMessageMJSON(uint8_t parNum, struct par_list_str_t *pssl,
 		char * jsonMsg);
 uint32_t parseDateTime(char *buffer);
 
-
+uint8_t parseJSONMessageAirGios(uint8_t parNum, struct par_list_str_t *pssl, char * jsonMsg);
 
 
 
