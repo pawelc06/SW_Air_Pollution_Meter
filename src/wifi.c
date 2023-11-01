@@ -309,6 +309,8 @@ int getPollutionIndexFromGios(char * serialBuffer) {
 	int httpResponseLength;
 	char lenStr[5];
 	memset(serialBuffer, 0, 4096);
+	char requestString[400];
+	int reqLen;
 
 #ifdef TEST_MODE
 	strcpy(serialBuffer,testResponse);
@@ -317,18 +319,118 @@ int getPollutionIndexFromGios(char * serialBuffer) {
 
 	TM_USART_ClearBuffer(USART2);
 
+	strcpy(requestString,"GET /pjp-api/rest/data/getData/18038 HTTP/1.1\r\nAccept-Encoding: gzip,deflate\r\nHost: api.gios.gov.pl\r\nConnection: Keep-Alive\r\n\r\n");
+	reqLen = strlen(requestString);
+
 	//bielany
+	TM_USART_Puts(USART2,requestString);
+	/*
 	TM_USART_Puts(USART2,
 			"GET /pjp-api/rest/data/getData/18038 HTTP/1.1\r\n");
 	TM_USART_Puts(USART2, "Accept-Encoding: gzip,deflate\r\n");
 	TM_USART_Puts(USART2, "Host: api.gios.gov.pl\r\n");
 	TM_USART_Puts(USART2, "Connection: Keep-Alive\r\n\r\n");
+	*/
 
 	Delay_ms(5000);
 	int i = 0;
 
 	while (!TM_USART_BufferEmpty(USART2)) {
 		c = TM_USART_Getc(USART2);
+		//TM_USART_Putc(USART1, c);
+		serialBuffer[i] = c;
+		i++;
+
+	}
+	serialBuffer[i] = 0;
+
+	httpResponseLength = strlen(serialBuffer);
+#endif
+
+	return httpResponseLength;
+}
+
+//for ESP12
+int getPollutionIndexFromGiosESP12(char * serialBuffer) {
+	uint8_t c;
+	int httpResponseLength;
+	char lenStr[5];
+	memset(serialBuffer, 0, 4096);
+	char requestString[400];
+	int reqLen;
+	int i = 0;
+
+#ifdef TEST_MODE
+	strcpy(serialBuffer,testResponse);
+	httpResponseLength = strlen(serialBuffer);
+#else
+
+	TM_USART_ClearBuffer(USART1);
+
+	TM_USART_Puts(USART1,"ATE0\r\n");
+
+	Delay_ms(1000);
+
+	i = 0;
+
+	while (!TM_USART_BufferEmpty(USART1)) {
+			c = TM_USART_Getc(USART1);
+			//TM_USART_Putc(USART1, c);
+			serialBuffer[i] = c;
+			i++;
+
+		}
+		serialBuffer[i] = 0;
+
+		TM_USART_ClearBuffer(USART1);
+
+		TM_USART_Puts(USART1,"AT+CIPSTART=\"TCP\",\"api.gios.gov.pl\",80\r\n");
+
+		Delay_ms(1000);
+
+			i = 0;
+
+			while (!TM_USART_BufferEmpty(USART1)) {
+					c = TM_USART_Getc(USART1);
+					//TM_USART_Putc(USART1, c);
+					serialBuffer[i] = c;
+					i++;
+
+				}
+				serialBuffer[i] = 0;
+
+				TM_USART_ClearBuffer(USART1);
+
+				TM_USART_Puts(USART1,"AT+CIPSEND=127\r\n");
+
+				Delay_ms(5000);
+
+				i = 0;
+
+							while (!TM_USART_BufferEmpty(USART1)) {
+									c = TM_USART_Getc(USART1);
+									//TM_USART_Putc(USART1, c);
+									serialBuffer[i] = c;
+									i++;
+
+								}
+								serialBuffer[i] = 0;
+
+
+
+
+	strcpy(requestString,"GET /pjp-api/rest/data/getData/18038 HTTP/1.1\r\nAccept-Encoding: gzip,deflate\r\nHost: api.gios.gov.pl\r\nConnection: Keep-Alive\r\n\r\n");
+	reqLen = strlen(requestString);
+
+	//bielany
+	TM_USART_Puts(USART1,requestString);
+
+
+	Delay_ms(5000);
+	i = 0;
+
+	while (!TM_USART_BufferEmpty(USART1)) {
+		c = TM_USART_Getc(USART1);
 		//TM_USART_Putc(USART1, c);
 		serialBuffer[i] = c;
 		i++;

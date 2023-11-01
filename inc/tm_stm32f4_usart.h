@@ -209,7 +209,7 @@ UART8        |PE1    PE0     |-      -       |-      -
 
 /* F405/407/415/417/F446 */
 #if defined (STM32F40_41xxx) || defined(STM32F446xx)
-//#define USE_USART1
+#define USE_USART1
 #define USE_USART2
 //#define USE_USART3
 //#define USE_UART4

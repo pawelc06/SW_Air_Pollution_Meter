@@ -427,9 +427,12 @@ int main(void) {
 
 	rtcInitStatus = TM_RTC_Init(TM_RTC_ClockSource_External);
 
+	TM_USART_Init(USART1, TM_USART_PinsPack_1, 115200);
 	TM_USART_Init(USART2, TM_USART_PinsPack_1, 115200);
 
 	s=0;
+
+	getPollutionIndexFromGiosESP12(serialBuffer);
 
 	//setSSIDAndPassword("xyz","xyz");
 	//resetUSRToFactorySettings();
