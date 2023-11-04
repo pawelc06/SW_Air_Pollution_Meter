@@ -10631,7 +10631,7 @@ const uint16_t ASCII8x8_Table [] = {
 
 sFONT64 VerdanaFont64x65 = {
   Verdana48ptBitmaps,
-  40, /* Width */
+  48, /* Width */
   66, /* Height */
 };
 
