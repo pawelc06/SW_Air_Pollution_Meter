@@ -482,7 +482,7 @@ int getPollutionIndexEsp32(char *serialBuffer) {
 
 	TM_USART_ClearBuffer(USART1);
 
-	TM_USART_Puts(USART1, "AT+CIPSTART=\"TCP\",\"195.187.34.96\",80\r\n");
+	TM_USART_Puts(USART1, "AT+CIPSTART=\"TCP\",\"85.25.104.143\",80\r\n");
 	//TM_USART_Puts(USART1, "AT+CIPSTART=\"TCP\",\"gios.gov.pl\",80\r\n");
 
 	Delay_ms(1000);

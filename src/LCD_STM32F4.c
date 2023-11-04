@@ -548,30 +548,7 @@ void Init_GPIO(void)
 
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB,ENABLE);
 
-  /* RESET for WiFi*/
 
-  init.GPIO_Pin=GPIO_Pin_4;
-  init.GPIO_Mode = GPIO_Mode_OUT;
-  init.GPIO_OType = GPIO_OType_PP;
- init.GPIO_PuPd = GPIO_PuPd_UP;
-  init.GPIO_Speed=GPIO_Speed_50MHz;
-  GPIO_Init(GPIOA,&init);
-
-  /* nREADY for WiFi*/
-
-    init.GPIO_Pin=GPIO_Pin_6;
-    init.GPIO_Mode = GPIO_Mode_IN;
-    init.GPIO_PuPd = GPIO_PuPd_NOPULL;
-    init.GPIO_Speed=GPIO_Speed_50MHz;
-    GPIO_Init(GPIOC,&init);
-
-    /* nLink for WiFi*/
-
-      init.GPIO_Pin=GPIO_Pin_7;
-      init.GPIO_Mode = GPIO_Mode_IN;
-      init.GPIO_PuPd = GPIO_PuPd_NOPULL;
-      init.GPIO_Speed=GPIO_Speed_50MHz;
-      GPIO_Init(GPIOC,&init);
 
 
   //-----------------------------------------

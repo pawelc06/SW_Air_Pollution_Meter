@@ -19,10 +19,9 @@
 #define XMAX 239
 #define YMAX 319
 
-
 char serialBuffer[USART_BUFFER_SIZE];
 
-int getPollutionIndex(char * serialBuffer);
+int getPollutionIndex(char *serialBuffer);
 
 unsigned int t[12];
 double v[12];
@@ -31,79 +30,80 @@ char s[12];
 time_t timeStructure1;
 
 /*--------------------------------------------------------------------------
-  FUNC: 6/11/11 - Returns day of week for any given date
-  PARAMS: year, month, date
-  RETURNS: day of week (0-7 is Sun-Sat)
-  NOTES: Sakamoto's Algorithm
-    http://en.wikipedia.org/wiki/Calculating_the_day_of_the_week#Sakamoto.27s_algorithm
-    Altered to use char when possible to save microcontroller ram
---------------------------------------------------------------------------*/
-char dow(int y, char m, char d)
-   {
-       static char t[] = {0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4};
-       y -= m < 3;
-       return (y + y/4 - y/100 + y/400 + t[m-1] + d) % 7;
-   }
-
-/*--------------------------------------------------------------------------
-  FUNC: 6/11/11 - Returns the date for Nth day of month. For instance,
-    it will return the numeric date for the 2nd Sunday of April
-  PARAMS: year, month, day of week, Nth occurence of that day in that month
-  RETURNS: date
-  NOTES: There is no error checking for invalid inputs.
---------------------------------------------------------------------------*/
-char NthDate(int year, char month, char DOW, char NthWeek){
-  char targetDate = 1;
-  char firstDOW = dow(year,month,targetDate);
-  while (firstDOW != DOW){
-    firstDOW = (firstDOW+1)%7;
-    targetDate++;
-  }
-  //Adjust for weeks
-  targetDate += (NthWeek-1)*7;
-  return targetDate;
+ FUNC: 6/11/11 - Returns day of week for any given date
+ PARAMS: year, month, date
+ RETURNS: day of week (0-7 is Sun-Sat)
+ NOTES: Sakamoto's Algorithm
+ http://en.wikipedia.org/wiki/Calculating_the_day_of_the_week#Sakamoto.27s_algorithm
+ Altered to use char when possible to save microcontroller ram
+ --------------------------------------------------------------------------*/
+char dow(int y, char m, char d) {
+	static char t[] = { 0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4 };
+	y -= m < 3;
+	return (y + y / 4 - y / 100 + y / 400 + t[m - 1] + d) % 7;
 }
 
-bool isDST(struct tm timeToCheck){
+/*--------------------------------------------------------------------------
+ FUNC: 6/11/11 - Returns the date for Nth day of month. For instance,
+ it will return the numeric date for the 2nd Sunday of April
+ PARAMS: year, month, day of week, Nth occurence of that day in that month
+ RETURNS: date
+ NOTES: There is no error checking for invalid inputs.
+ --------------------------------------------------------------------------*/
+char NthDate(int year, char month, char DOW, char NthWeek) {
+	char targetDate = 1;
+	char firstDOW = dow(year, month, targetDate);
+	while (firstDOW != DOW) {
+		firstDOW = (firstDOW + 1) % 7;
+		targetDate++;
+	}
+	//Adjust for weeks
+	targetDate += (NthWeek - 1) * 7;
+	return targetDate;
+}
+
+bool isDST(struct tm timeToCheck) {
 	char lastSundayDay;
-	if(timeToCheck.tm_mon >=3 && timeToCheck.tm_mon <=8 ){ //DST is from April to September always
+	if (timeToCheck.tm_mon >= 3 && timeToCheck.tm_mon <= 8) { //DST is from April to September always
 		return true;
 	}
 
-	if((timeToCheck.tm_mon >=0 && timeToCheck.tm_mon <=1) || (timeToCheck.tm_mon >=10 && timeToCheck.tm_mon <=11)){ //no DST
-			return false;
+	if ((timeToCheck.tm_mon >= 0 && timeToCheck.tm_mon <= 1)
+			|| (timeToCheck.tm_mon >= 10 && timeToCheck.tm_mon <= 11)) { //no DST
+		return false;
 	}
 
-	if((timeToCheck.tm_mon == 2)){ //Date in March
-		if(timeToCheck.tm_year%4 == 0){//leap year like 2020
-			lastSundayDay = NthDate(timeToCheck.tm_year+1900, timeToCheck.tm_mon+1, 0, 5);
+	if ((timeToCheck.tm_mon == 2)) { //Date in March
+		if (timeToCheck.tm_year % 4 == 0) { //leap year like 2020
+			lastSundayDay = NthDate(timeToCheck.tm_year + 1900,
+					timeToCheck.tm_mon + 1, 0, 5);
 		} else {
-			lastSundayDay = NthDate(timeToCheck.tm_year+1900, timeToCheck.tm_mon+1, 0, 4);
+			lastSundayDay = NthDate(timeToCheck.tm_year + 1900,
+					timeToCheck.tm_mon + 1, 0, 4);
 		}
-		if(timeToCheck.tm_mday < lastSundayDay){
+		if (timeToCheck.tm_mday < lastSundayDay) {
 			return false;
 		} else {
 			return true;
 		}
 	}
 
-	if((timeToCheck.tm_mon == 9)){ //Date in October
-		if(timeToCheck.tm_year%4 == 0){//leap year like 2020
-			lastSundayDay = NthDate(timeToCheck.tm_year+1900, timeToCheck.tm_mon+1, 0, 4);
+	if ((timeToCheck.tm_mon == 9)) { //Date in October
+		if (timeToCheck.tm_year % 4 == 0) { //leap year like 2020
+			lastSundayDay = NthDate(timeToCheck.tm_year + 1900,
+					timeToCheck.tm_mon + 1, 0, 4);
 		} else {
-			lastSundayDay = NthDate(timeToCheck.tm_year+1900, timeToCheck.tm_mon+1, 0, 5);
+			lastSundayDay = NthDate(timeToCheck.tm_year + 1900,
+					timeToCheck.tm_mon + 1, 0, 5);
 		}
-		if(timeToCheck.tm_mday < lastSundayDay){
-					return true;
-				} else {
-					return false;
-				}
+		if (timeToCheck.tm_mday < lastSundayDay) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
-
-
 }
-
 
 void displayTable(uint8_t parNum, struct par_list_str_t *pssl) {
 	struct tm time1;
@@ -121,12 +121,11 @@ void displayTable(uint8_t parNum, struct par_list_str_t *pssl) {
 				pssl->par_list[parNum - 1].sample_list[i].t_str);
 		time1 = *localtime(&timeStructure1);
 		bool isDst = isDST(time1);
-		if(isDst){
+		if (isDst) {
 			h = time1.tm_hour + 3;
 		} else {
 			h = time1.tm_hour + 2;
 		}
-
 
 		if (h == 24) {
 			h = 0;
@@ -196,22 +195,22 @@ void displayChartPM25(uint8_t parNum, struct par_list_str_t *pssl) {
 		time1 = *localtime(&timeStructure1);
 
 		bool isDst = isDST(time1);
-				if(isDst){
-					h = time1.tm_hour + 2;
-				} else {
-					h = time1.tm_hour + 1;
-				}
-
-		//summer time
-				/*
-		if (dst[0] == '1') {
+		if (isDst) {
 			h = time1.tm_hour + 2;
 		} else {
-
-			//winter time
 			h = time1.tm_hour + 1;
 		}
-		*/
+
+		//summer time
+		/*
+		 if (dst[0] == '1') {
+		 h = time1.tm_hour + 2;
+		 } else {
+
+		 //winter time
+		 h = time1.tm_hour + 1;
+		 }
+		 */
 
 		if (h == 24) {
 			h = 0;
@@ -245,8 +244,11 @@ void displayChartPM25(uint8_t parNum, struct par_list_str_t *pssl) {
 		color = LCD_RED;
 	}
 
-	//Display_String(50, 180, pssl->par_list[parNum - 1].sample_list[i - 1].v_str,color);
-	Display_String64(20, 220, pssl->par_list[parNum - 1].sample_list[i - 1].v_str,color);
+	char *dotChar = strchr(pssl->par_list[parNum - 1].sample_list[i - 1].v_str,'.');
+	*dotChar = 0;
+
+	Display_String64(20, 220,
+			pssl->par_list[parNum - 1].sample_list[i - 1].v_str, color);
 }
 
 void displayChartTemperature(uint8_t parNum, struct par_list_str_t *pssl) {
@@ -268,20 +270,18 @@ void displayChartTemperature(uint8_t parNum, struct par_list_str_t *pssl) {
 	//vertical axis
 	Draw_Line(XMAX - 20, YMAX - 40 + 5, 20, YMAX - 40 + 5, LCD_BLUE);
 
-
 	Draw_Line(XMAX - 10 * 3 - 20, YMAX - 40 + 5, XMAX - 10 * 3 - 20, 20,
-		LCD_GREY);
+	LCD_GREY);
 	Draw_Line(XMAX - 20 * 3 - 20, YMAX - 40 + 5, XMAX - 20 * 3 - 20, 20,
 	LCD_GREY);
 	Draw_Line(XMAX - 30 * 3 - 20, YMAX - 40 + 5, XMAX - 30 * 3 - 20, 20,
-		LCD_GREY);
+	LCD_GREY);
 	Draw_Line(XMAX - 40 * 3 - 20, YMAX - 40 + 5, XMAX - 40 * 3 - 20, 20,
 	LCD_GREY);
 	Draw_Line(XMAX - 50 * 3 - 20, YMAX - 40 + 5, XMAX - 50 * 3 - 20, 20,
-		LCD_GREY);
+	LCD_GREY);
 	Draw_Line(XMAX - 60 * 3 - 20, YMAX - 40 + 5, XMAX - 60 * 3 - 20, 20,
 	LCD_GREY);
-
 
 	Display_String(XMAX - 10 * 3 - 20 - 6, YMAX - 5 - 8 + 5, "-10", LCD_BLACK);
 	Display_String(XMAX - 20 * 3 - 20 - 6, YMAX - 5 - 8 + 5, " 0", LCD_BLACK);
@@ -302,38 +302,39 @@ void displayChartTemperature(uint8_t parNum, struct par_list_str_t *pssl) {
 		time1 = *localtime(&timeStructure1);
 
 		bool isDst = isDST(time1);
-						if(isDst){
-							h = time1.tm_hour + 2;
-						} else {
-							h = time1.tm_hour + 1;
-						}
+		if (isDst) {
+			h = time1.tm_hour + 2;
+		} else {
+			h = time1.tm_hour + 1;
+		}
 
-				//summer time
-						/*
-				if (dst[0] == '1') {
-					h = time1.tm_hour + 2;
-				} else {
+		//summer time
+		/*
+		 if (dst[0] == '1') {
+		 h = time1.tm_hour + 2;
+		 } else {
 
-					//winter time
-					h = time1.tm_hour + 1;
-				}
-				*/
+		 //winter time
+		 h = time1.tm_hour + 1;
+		 }
+		 */
 
-				if (h == 24) {
-					h = 0;
-				}
+		if (h == 24) {
+			h = 0;
+		}
 
-				if (h == 25) {
-					h = 1;
-				}
+		if (h == 25) {
+			h = 1;
+		}
 		val = (int16_t) atof(pssl->par_list[parNum - 1].sample_list[i].v_str);
 		prev_val = (int16_t) atof(
 				pssl->par_list[parNum - 1].sample_list[i - 1].v_str);
 
 		itoa(h, timeStr, 10);
 
-		Draw_Line(XMAX - (prev_val+20.0f) * 3 - 20, j, XMAX - (val+20.0f) * 3 - 20, j - 20,
-		LCD_RED);
+		Draw_Line(XMAX - (prev_val + 20.0f) * 3 - 20, j,
+				XMAX - (val + 20.0f) * 3 - 20, j - 20,
+				LCD_RED);
 
 		Display_String(XMAX - 18, j - 20 + 4 + 5, timeStr, LCD_BLACK);
 
@@ -344,7 +345,6 @@ void displayChartTemperature(uint8_t parNum, struct par_list_str_t *pssl) {
 	Set_Font64(&VerdanaFont64x65);
 	//Display_String64(75, 310, "12.7", LCD_WHITE);
 
-
 	if (val <= 10) {
 		color = LCD_BLUE;
 	} else if (val > 15 && val < 25) {
@@ -353,24 +353,21 @@ void displayChartTemperature(uint8_t parNum, struct par_list_str_t *pssl) {
 		color = LCD_RED;
 	}
 
-
-	Display_String64(20, 288, pssl->par_list[parNum - 1].sample_list[i - 1].v_str,color);
-	Display_String64(20, 100, "~C",color);
+	Display_String64(20, 288,
+			pssl->par_list[parNum - 1].sample_list[i - 1].v_str, color);
+	Display_String64(20, 100, "~C", color);
 
 	//Display_String(45, 190, pssl->par_list[parNum - 1].sample_list[i - 1].v_str,color);
 	//Display_String(45, 130, "~C",color);
 
 }
 
-uint8_t synchronizeTime(uint32_t ts){
+uint8_t synchronizeTime(uint32_t ts) {
 
 	time_t timeStructure2;
 	struct tm time1;
 	TM_RTC_t timeStruct;
 	TM_RTC_Result_t res;
-
-
-
 
 	timeStructure2 = (time_t) ts;
 	time1 = *localtime(&timeStructure2);
@@ -385,15 +382,15 @@ uint8_t synchronizeTime(uint32_t ts){
 	timeStruct.month = time1.tm_mon + 1;
 	timeStruct.year = time1.tm_year - 100;
 	//timeStruct.year = 1920;
-	timeStruct.day = time1.tm_wday+1;
+	timeStruct.day = time1.tm_wday + 1;
 
-	res = TM_RTC_SetDateTime(&timeStruct,TM_RTC_Format_BIN);
+	res = TM_RTC_SetDateTime(&timeStruct, TM_RTC_Format_BIN);
 	return 0;
 }
 
 int main(void) {
 
-	char * jsonBegin;
+	char *jsonBegin;
 
 	int httpRespLength;
 	int result;
@@ -402,7 +399,7 @@ int main(void) {
 
 	char ts2[20];
 	TM_RTC_t RTC_Data;
-	uint32_t ts1;
+
 	uint32_t rtcInitStatus;
 	uint8_t i;
 	time_t utcTime;
@@ -421,19 +418,20 @@ int main(void) {
 	Clear_Screen(0x0000);
 	Set_Font(&Font8x12);
 
-
 	rtcInitStatus = TM_RTC_Init(TM_RTC_ClockSource_External);
 
 	TM_USART_Init(USART1, TM_USART_PinsPack_1, 115200);
-	TM_USART_Init(USART2, TM_USART_PinsPack_1, 115200);
+	//TM_USART_Init(USART2, TM_USART_PinsPack_1, 115200);
 
-	s=0;
+	s = 0;
 
+	/* for the future use
 	getPollutionIndexFromGiosESP12(serialBuffer);
 	jsonBegin = serialBuffer;
 	parseJSONMessageAirGios(1, &pssl, jsonBegin);
+	*/
 
-	getNTPTimeFromTimeServerEsp32(serialBuffer,&utcTime);
+	getNTPTimeFromTimeServerEsp32(serialBuffer, &utcTime);
 
 	getPollutionIndexEsp32(serialBuffer);
 
@@ -442,80 +440,72 @@ int main(void) {
 
 	while (1) {
 		//time server
-	if(s%144 == 0){ //every 24h so time synchronization
+		if (s % 144 == 0) { //every 24h so time synchronization
 
-		if (getNTPTimeFromTimeServerEsp32(serialBuffer,&utcTime) ) {
-			//ts1 = parseDateTime(serialBuffer);
-			synchronizeTime(utcTime);
-			Display_String(75, 310, "Time synchronized correctly.", LCD_WHITE);
-		} else {
-			Display_String(75, 310, "Time synchronization failed!", LCD_WHITE);
-			continue;
+			if (getNTPTimeFromTimeServerEsp32(serialBuffer, &utcTime)) {
+				//ts1 = parseDateTime(serialBuffer);
+				synchronizeTime(utcTime);
+				Display_String(75, 310, "Time synchronized correctly.",
+						LCD_WHITE);
+			} else {
+				Display_String(75, 310, "Time synchronization failed!",
+						LCD_WHITE);
+				continue;
+			}
+
+
+			/*
+			httpRespLength = getPollutionIndexFromGiosESP12(serialBuffer);
+			jsonBegin = serialBuffer;
+			parseJSONMessageAirGios(1, &pssl, jsonBegin);
+			*/
+
+
 		}
 
-		initWiFiModuleTCP("195.187.34.96");
-		Delay_ms(5000);
-		//httpRespLength = getPollutionIndexFromGios(serialBuffer);
-		httpRespLength = getPollutionIndexFromGiosESP12(serialBuffer);
-		jsonBegin = serialBuffer;
-		parseJSONMessageAirGios(1, &pssl, jsonBegin);
-
-#ifndef TEST_MODE
-		//air server
-		initWiFiModuleTCP("85.25.104.143");
-		Delay_ms(5000);
-#endif
-	}
-
-
-
 		Set_Font(&Font8x12);
-		Display_String(75, 310, "Sending HTTP Request ->", LCD_WHITE);
+		Display_String(95, 310, "Sending HTTP Request ->", LCD_WHITE);
 
-		httpRespLength = getPollutionIndex(serialBuffer);
+		httpRespLength = getPollutionIndexEsp32(serialBuffer);
 		Display_String(90, 310, "HTTP Response with length:", LCD_WHITE);
 		itoa(httpRespLength, lenString, 10);
 		Display_String(90, 100, lenString, LCD_WHITE);
 
-
-
 		jsonBegin = serialBuffer;
 
-
-
-
-
-		if (jsonBegin && httpRespLength && !parseJSONMessageAir(21, &pssl, jsonBegin)) {
+		if (jsonBegin && httpRespLength
+				&& !parseJSONMessageAir(21, &pssl, jsonBegin)) {
 
 			//temperature
 			result = parseJSONMessageAir(18, &pssl, jsonBegin);
 			//displayTable(8,&pssl);
 
-			i=0;
+			i = 0;
 
 			//repeat one chart per minute five times
-			while(i<20){
+			while (i < 20) {
 
 				//displayChartPM25(17, &pssl);
 				displayChartPM25(21, &pssl);
 				TM_RTC_GetDateTime(&RTC_Data, TM_RTC_Format_BIN);
-				sprintf(ts2, "%02d:%02d:%02d", RTC_Data.hours, RTC_Data.minutes, RTC_Data.seconds);
+				sprintf(ts2, "%02d:%02d:%02d", RTC_Data.hours, RTC_Data.minutes,
+						RTC_Data.seconds);
 				Set_Font(&Font8x12);
 				Display_String(0, 310, ts2, LCD_BLACK);
 
 				Delay_ms(15000);
 
-				displayChartTemperature(18,&pssl);
+				displayChartTemperature(18, &pssl);
 
 				TM_RTC_GetDateTime(&RTC_Data, TM_RTC_Format_BIN);
-				sprintf(ts2, "%02d:%02d:%02d", RTC_Data.hours, RTC_Data.minutes, RTC_Data.seconds);
+				sprintf(ts2, "%02d:%02d:%02d", RTC_Data.hours, RTC_Data.minutes,
+						RTC_Data.seconds);
 				Set_Font(&Font8x12);
 				Display_String(0, 310, ts2, LCD_BLACK);
 				Delay_ms(15000);
 
 				i++;
 			}
-
 
 			s++;
 
@@ -527,7 +517,4 @@ int main(void) {
 
 	return 0;
 }
-
-
-
 
