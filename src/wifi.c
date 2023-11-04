@@ -367,15 +367,15 @@ int getPollutionIndexFromGiosESP12(char * serialBuffer) {
 
 	TM_USART_ClearBuffer(USART1);
 
-	TM_USART_Puts(USART1,"ATE0\r\n");
+	//TM_USART_Puts(USART1,"ATE0\r\n");
 
-	Delay_ms(1000);
+	//Delay_ms(1000);
 
-	TM_USART_Puts(USART1,"AT+CIPDINFO=0\r\n");
+	//TM_USART_Puts(USART1,"AT+CIPDINFO=0\r\n");
 
-	Delay_ms(1000);
+	//Delay_ms(1000);
 
-	TM_USART_Puts(USART1,"AT+CIPRECVMODE=1\r\n");
+	//TM_USART_Puts(USART1,"AT+CIPRECVMODE=1\r\n");
 
 	Delay_ms(1000);
 
@@ -396,27 +396,19 @@ int getPollutionIndexFromGiosESP12(char * serialBuffer) {
 				}
 				serialBuffer[i] = 0;
 
-				TM_USART_ClearBuffer(USART1);
-
-				TM_USART_Puts(USART1,"AT+CIPSEND=127\r\n");
-
-				Delay_ms(5000);
-
-				i = 0;
-
-							while (!TM_USART_BufferEmpty(USART1)) {
-									c = TM_USART_Getc(USART1);
-									//TM_USART_Putc(USART1, c);
-									serialBuffer[i] = c;
-									i++;
-
-								}
-								serialBuffer[i] = 0;
 
 
+		TM_USART_Puts(USART1,"AT+CIPMODE=1\r\n");
 
+		Delay_ms(1000);
 
-	strcpy(requestString,"GET /pjp-api/rest/data/getData/18038 HTTP/1.1\r\nAccept-Encoding: gzip,deflate\r\nHost: api.gios.gov.pl\r\nConnection: Keep-Alive\r\n\r\n");
+		TM_USART_Puts(USART1,"AT+CIPSEND\r\n");
+
+		Delay_ms(1000);
+
+		TM_USART_ClearBuffer(USART1);
+
+	strcpy(requestString,"GET /pjp-api/rest/data/getData/18038 HTTP/1.1\r\nHost: api.gios.gov.pl\r\nConnection: Keep-Alive\r\n\r\n");
 	reqLen = strlen(requestString);
 
 	//bielany
@@ -434,6 +426,15 @@ int getPollutionIndexFromGiosESP12(char * serialBuffer) {
 
 	}
 	serialBuffer[i] = 0;
+
+	TM_USART_Puts(USART1,"+++");
+	Delay_ms(2000);
+
+	TM_USART_Puts(USART1,"AT+CIPMODE=0\r\n");
+	Delay_ms(1000);
+
+	TM_USART_Puts(USART1,"AT+CIPCLOSE\r\n");
+	Delay_ms(1000);
 
 	httpResponseLength = strlen(serialBuffer);
 #endif
