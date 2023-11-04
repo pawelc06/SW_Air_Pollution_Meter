@@ -399,7 +399,7 @@ int main(void) {
 	int result;
 	char lenString[5];
 	uint16_t s;
-	uint8_t size;
+
 	char ts2[20];
 	TM_RTC_t RTC_Data;
 	uint32_t ts1;
@@ -420,10 +420,7 @@ int main(void) {
 
 	Clear_Screen(0x0000);
 	Set_Font(&Font8x12);
-	//Set_Font(&VerdanaFont30x32);
 
-	//Set_Font64(&VerdanaFont64x65);
-	//Display_String64(75, 310, "12.7", LCD_WHITE);
 
 	rtcInitStatus = TM_RTC_Init(TM_RTC_ClockSource_External);
 
@@ -436,17 +433,18 @@ int main(void) {
 	jsonBegin = serialBuffer;
 	parseJSONMessageAirGios(1, &pssl, jsonBegin);
 
+	getNTPTimeFromTimeServerEsp32(serialBuffer,&utcTime);
+
+	getPollutionIndexEsp32(serialBuffer);
+
 	//setSSIDAndPassword("xyz","xyz");
 	//resetUSRToFactorySettings();
 
 	while (1) {
 		//time server
 	if(s%144 == 0){ //every 24h so time synchronization
-		initWiFiModuleUDP("195.46.37.22","123");
-		Delay_ms(5000);
 
-		//if (getTimeFromWeb(serialBuffer) ){
-		if (getNTPTimeFromTimeServer(serialBuffer,&utcTime) ) {
+		if (getNTPTimeFromTimeServerEsp32(serialBuffer,&utcTime) ) {
 			//ts1 = parseDateTime(serialBuffer);
 			synchronizeTime(utcTime);
 			Display_String(75, 310, "Time synchronized correctly.", LCD_WHITE);
