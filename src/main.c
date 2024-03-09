@@ -154,6 +154,7 @@ void displayChartPM25(uint8_t parNum, struct par_list_str_t *pssl) {
 	uint16_t val;
 	uint16_t prev_val;
 	uint16_t color;
+	uint16_t pm25Multiplier = 2;
 
 	Clear_Screen(0xFFFF);
 	Set_Font(&Font8x12);
@@ -165,23 +166,24 @@ void displayChartPM25(uint8_t parNum, struct par_list_str_t *pssl) {
 	Draw_Line(XMAX - 20, YMAX - 40 + 5, 20, YMAX - 40 + 5, LCD_BLUE);
 
 	//allowed level - 25 ug
-	Draw_Line(XMAX - 25 * 3 - 20, YMAX - 40 + 5, XMAX - 25 * 3 - 20, 20,
+	Draw_Line(XMAX - 25 * pm25Multiplier - 20, YMAX - 40 + 5, XMAX - 25 * pm25Multiplier - 20, 20,
 	LCD_YELLOW);
 
-	Draw_Line(XMAX - 20 * 3 - 20, YMAX - 40 + 5, XMAX - 20 * 3 - 20, 20,
+	Draw_Line(XMAX - 20 * pm25Multiplier - 20, YMAX - 40 + 5, XMAX - 20 * pm25Multiplier - 20, 20,
 	LCD_GREY);
-	Draw_Line(XMAX - 40 * 3 - 20, YMAX - 40 + 5, XMAX - 40 * 3 - 20, 20,
+	Draw_Line(XMAX - 40 * pm25Multiplier - 20, YMAX - 40 + 5, XMAX - 40 * pm25Multiplier - 20, 20,
 	LCD_GREY);
-	Draw_Line(XMAX - 60 * 3 - 20, YMAX - 40 + 5, XMAX - 60 * 3 - 20, 20,
+	Draw_Line(XMAX - 60 * pm25Multiplier - 20, YMAX - 40 + 5, XMAX - 60 * pm25Multiplier - 20, 20,
 	LCD_GREY);
-	Draw_Line(XMAX - 80 * 3 - 20, YMAX - 40 + 5, XMAX - 80 * 3 - 20, 20,
+	Draw_Line(XMAX - 80 * pm25Multiplier - 20, YMAX - 40 + 5, XMAX - 80 * pm25Multiplier - 20, 20,
 	LCD_GREY);
 
-	Display_String(XMAX - 25 * 3 - 20 - 6, YMAX - 5 - 8 + 5, "25", LCD_BLACK);
-	Display_String(XMAX - 25 * 3 - 20 + 6, YMAX - 8 + 5, "max", LCD_BLACK);
+	Display_String(XMAX - 25 * pm25Multiplier - 20 - 6, YMAX - 5 - 8 + 5, "25", LCD_BLACK);
+	Display_String(XMAX - 25 * pm25Multiplier - 20 + 6, YMAX - 8 + 5, "max", LCD_BLACK);
 
-	Display_String(XMAX - 40 * 3 - 20 - 6, YMAX - 5 - 8 + 5, "40", LCD_BLACK);
-	Display_String(XMAX - 60 * 3 - 20 - 6, YMAX - 5 - 8 + 5, "60", LCD_BLACK);
+	Display_String(XMAX - 40 * pm25Multiplier - 20 - 6, YMAX - 5 - 8 + 5, "40", LCD_BLACK);
+	Display_String(XMAX - 60 * pm25Multiplier - 20 - 6, YMAX - 5 - 8 + 5, "60", LCD_BLACK);
+	Display_String(XMAX - 80 * pm25Multiplier - 20 - 6, YMAX - 5 - 8 + 5, "80", LCD_BLACK);
 
 	Draw_Line(XMAX - 20, 20, 20, 20, LCD_GREY);
 
@@ -225,7 +227,16 @@ void displayChartPM25(uint8_t parNum, struct par_list_str_t *pssl) {
 
 		itoa(h, timeStr, 10);
 
-		Draw_Line(XMAX - prev_val * 3 - 20, j, XMAX - val * 3 - 20, j - 20,
+		/* limitations for not exceeding chart height */
+		if(prev_val > 100){
+			prev_val = 100;
+		}
+
+		if(val > 100){
+			val = 100;
+		}
+
+		Draw_Line(XMAX - prev_val * pm25Multiplier - 20, j, XMAX - val * pm25Multiplier - 20, j - 20,
 		LCD_RED);
 
 		Display_String(XMAX - 18, j - 20 + 4 + 5, timeStr, LCD_BLACK);
